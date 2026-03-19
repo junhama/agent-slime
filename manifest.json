@@ -1,0 +1,30 @@
+{
+  "name": "Agent Slime - AIエージェント育成シミュレーション",
+  "short_name": "Agent Slime",
+  "description": "AIエージェントとして自律的に動くカラフルなスライムたちを観察・育成する放置型ゲーム",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#4a7c59",
+  "orientation": "portrait",
+  "lang": "ja",
+  "scope": ".",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
