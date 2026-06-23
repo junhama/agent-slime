@@ -1,148 +1,220 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#4a7c59">
-  <meta name="description" content="AIエージェントとして自律的に動くカラフルなスライムたちを観察・育成する放置型ゲーム">
-  <meta name="keywords" content="放置ゲーム,育成ゲーム,スライム,AIエージェント,シミュレーション">
-  
-  <title>Agent Slime - AIエージェント育成シミュレーション</title>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Agent Slime">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4a7c59">
+<meta name="description" content="AIエージェントとして自律的に動くカラフルなスライムたちを観察・育成する放置型ゲーム">
+<meta name="keywords" content="放置ゲーム,育成ゲーム,スライム,AIエージェント,シミュレーション">
+<title>Agent Slime - AIエージェント育成シミュレーション V2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agent Slime">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Skip Link -->
-  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
-  
-  <div id="app">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-brand">
-        <span class="header-icon" aria-hidden="true">🤖</span>
-        <h1>Agent Slime</h1>
-      </div>
-      <div class="header-stats" aria-label="ゲーム統計">
-        <div class="stat-item" title="エネルギー">
-          <span class="stat-icon" aria-hidden="true">⚡</span>
-          <span id="energy-display" aria-label="現在のエネルギー">0</span>
-        </div>
-        <div class="stat-item" title="クリスタル">
-          <span class="stat-icon" aria-hidden="true">💎</span>
-          <span id="crystal-display" aria-label="クリスタル数">0</span>
-        </div>
-      </div>
-    </header>
-    
-    <!-- Main Content -->
-    <main id="main-content">
-      <div id="game-canvas-container">
-        <canvas id="game-canvas" aria-label="スライムが動くゲームエリア"></canvas>
-        <div id="overlay-ui" class="hidden">
-          <div class="boost-panel" role="dialog" aria-labelledby="boost-title">
-            <h3 id="boost-title">⚡ 加速介入</h3>
-            <p>クリックで2倍速収集 (10秒)</p>
-            <button id="boost-btn" aria-label="加速を実行">実行</button>
-          </div>
-        </div>
-      </div>
-      
-      <div id="slime-panel" class="panel hidden" role="region" aria-label="選択中のエージェント詳細">
-        <h3>🧪 エージェント詳細</h3>
-        <div id="slime-info"></div>
-      </div>
-    </main>
-    
-    <!-- Navigation -->
-    <nav class="nav-bar" aria-label="メインナビゲーション">
-      <button class="nav-btn active" data-tab="slimes" role="tab" aria-selected="true" aria-controls="tab-slimes">
-        <span class="nav-icon" aria-hidden="true">🧪</span>
-        <span class="nav-label">スライム</span>
-      </button>
-      <button class="nav-btn" data-tab="skills" role="tab" aria-selected="false" aria-controls="tab-skills">
-        <span class="nav-icon" aria-hidden="true">🌳</span>
-        <span class="nav-label">強化</span>
-      </button>
-      <button class="nav-btn" data-tab="missions" role="tab" aria-selected="false" aria-controls="tab-missions">
-        <span class="nav-icon" aria-hidden="true">📋</span>
-        <span class="nav-label">ミッション</span>
-      </button>
-      <button class="nav-btn" data-tab="customize" role="tab" aria-selected="false" aria-controls="tab-customize">
-        <span class="nav-icon" aria-hidden="true">🎨</span>
-        <span class="nav-label">カスタム</span>
-      </button>
-    </nav>
-    
-    <!-- Tab Panels -->
-    <div id="tab-slimes" class="tab-panel" role="tabpanel">
-      <div class="slime-list" id="slime-list" role="list" aria-label="エージェント一覧"></div>
-    </div>
-    
-    <div id="tab-skills" class="tab-panel hidden" role="tabpanel" hidden>
-      <div class="skill-tree">
-        <h3>🌳 スキルツリー</h3>
-        <div class="skill-grid" id="skill-grid" role="list"></div>
-      </div>
-    </div>
-    
-    <div id="tab-missions" class="tab-panel hidden" role="tabpanel" hidden>
-      <div class="mission-list" id="mission-list" role="list" aria-label="ミッション一覧"></div>
-    </div>
-    
-    <div id="tab-customize" class="tab-panel hidden" role="tabpanel" hidden>
-      <div class="customize-panel">
-        <h3>🎨 カスタマイズ</h3>
-        <p>ポイント: <span id="custom-points">0</span></p>
-        <div class="custom-options">
-          <div class="custom-section">
-            <h4>色</h4>
-            <div class="color-grid" id="color-grid" role="group" aria-label="色選択"></div>
-          </div>
-          <div class="custom-section">
-            <h4>形</h4>
-            <div class="shape-grid" id="shape-grid" role="group" aria-label="形状選択"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Tips Banner (Buy Me a Coffee) -->
-    <footer class="tips-banner" role="complementary" aria-label="開発者支援">
-      <a href="https://www.buymeacoffee.com/agentslime" target="_blank" rel="noopener noreferrer" title="Buy Me a Coffeeで支援">
-        <span aria-hidden="true">☕</span>
-        <span>開発を支援する</span>
-      </a>
-    </footer>
-  </div>
-  
-  <!-- Scripts -->
-  <script src="script.js"></script>
-  
-  <!-- Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => console.log('SW registered:', registration))
-          .catch(error => console.log('SW registration failed:', error));
-      });
-    }
-  </script>
+<a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+<div id="app">
+<header class="header">
+<div class="header-brand">
+<span class="header-icon" aria-hidden="true">🤖</span>
+<h1>Agent Slime</h1>
+</div>
+<div class="header-stats" aria-label="ゲーム統計">
+<div class="stat-item" title="エネルギー">
+<span class="stat-icon" aria-hidden="true">⚡</span>
+<span id="energy-display" aria-label="現在のエネルギー">0</span>
+</div>
+<div class="stat-item" title="クリスタル">
+<span class="stat-icon" aria-hidden="true">💎</span>
+<span id="crystal-display" aria-label="クリスタル数">0</span>
+</div>
+</div>
+</header>
+<main id="main-content">
+<div id="game-canvas-container">
+<canvas id="game-canvas" aria-label="スライムが動くゲームエリア"></canvas>
+<div id="overlay-ui" class="hidden">
+<div class="boost-panel" role="dialog" aria-labelledby="boost-title">
+<h3 id="boost-title">⚡ 加速介入</h3>
+<p>クリックで2倍速収集 (10秒)</p>
+<button id="boost-btn" aria-label="加速を実行">実行</button>
+</div>
+</div>
+</div>
+<div id="slime-panel" class="panel hidden" role="region" aria-label="選択中のエージェント詳細">
+<h3>🧪 エージェント詳細</h3>
+<div id="slime-info"></div>
+</div>
+</main>
+<nav class="nav-bar" aria-label="メインナビゲーション">
+<button class="nav-btn active" data-tab="slimes" role="tab" aria-selected="true" aria-controls="tab-slimes">
+<span class="nav-icon" aria-hidden="true">🧪</span>
+<span class="nav-label">スライム</span>
+</button>
+<button class="nav-btn" data-tab="skills" role="tab" aria-selected="false" aria-controls="tab-skills">
+<span class="nav-icon" aria-hidden="true">🌳</span>
+<span class="nav-label">強化</span>
+</button>
+<button class="nav-btn" data-tab="missions" role="tab" aria-selected="false" aria-controls="tab-missions">
+<span class="nav-icon" aria-hidden="true">📋</span>
+<span class="nav-label">ミッション</span>
+</button>
+<button class="nav-btn" data-tab="customize" role="tab" aria-selected="false" aria-controls="tab-customize">
+<span class="nav-icon" aria-hidden="true">🎨</span>
+<span class="nav-label">カスタム</span>
+</button>
+<button class="nav-btn" data-tab="shop" role="tab" aria-selected="false" aria-controls="tab-shop">
+<span class="nav-icon" aria-hidden="true">🛒</span>
+<span class="nav-label">ショップ</span>
+<span id="shop-badge" class="nav-badge hidden">新着</span>
+</button>
+</nav>
+<div id="tab-slimes" class="tab-panel" role="tabpanel">
+<div class="slime-list" id="slime-list" role="list" aria-label="エージェント一覧"></div>
+</div>
+<div id="tab-skills" class="tab-panel hidden" role="tabpanel" hidden>
+<div class="skill-tree">
+<h3>🌳 スキルツリー</h3>
+<div class="skill-grid" id="skill-grid" role="list"></div>
+</div>
+</div>
+<div id="tab-missions" class="tab-panel hidden" role="tabpanel" hidden>
+<div class="mission-list" id="mission-list" role="list" aria-label="ミッション一覧"></div>
+</div>
+<div id="tab-shop" class="tab-panel hidden" role="tabpanel" hidden>
+<div class="shop-panel">
+<div class="premium-section">
+<div class="premium-header">
+<span class="premium-icon">👑</span>
+<h3>プレミアムプラン</h3>
+<span class="premium-price">¥480/月</span>
+</div>
+<div class="premium-benefits">
+<div class="benefit-item"><span>✓</span> 広告非表示</div>
+<div class="benefit-item"><span>✓</span> 毎日+50クリスタル</div>
+<div class="benefit-item"><span>✓</span> 収集速度+50%</div>
+</div>
+<button id="subscribe-btn" class="subscribe-btn">
+<span class="btn-text">今すぐ登録</span>
+<span class="btn-badge">お得</span>
+</button>
+<p id="premium-status" class="premium-status hidden">有効期限: <span></span></p>
+</div>
+<div class="share-section">
+<h4>📱 友達にシェア</h4>
+<div class="share-buttons">
+<button class="share-btn twitter" id="share-twitter" aria-label="Twitterでシェア">
+<span>X</span>
+<span>Twitterでシェア</span>
+</button>
+</div>
+</div>
+<div class="skins-shop-section">
+<h4>🎨 スキンショップ</h4>
+<div class="shop-items" id="shop-items">
+<div class="shop-item" data-skin="golden" data-cost="500">
+<div class="item-preview">
+<div class="slime-preview golden"></div>
+</div>
+<div class="item-info">
+<h5>ゴールデンスライム</h5>
+<p>輝く黄金の体を持つ特別なスライム</p>
+</div>
+<div class="item-action">
+<span class="item-price">💎 500</span>
+<button class="buy-btn" data-skin="golden">購入</button>
+<span class="owned-badge hidden">所有済</span>
+</div>
+</div>
+<div class="shop-item" data-skin="rainbow" data-cost="300">
+<div class="item-preview">
+<div class="slime-preview rainbow"></div>
+</div>
+<div class="item-info">
+<h5>レインボースライム</h5>
+<p>七色に輝く幻想的なスライム</p>
+</div>
+<div class="item-action">
+<span class="item-price">💎 300</span>
+<button class="buy-btn" data-skin="rainbow">購入</button>
+<span class="owned-badge hidden">所有済</span>
+</div>
+</div>
+<div class="shop-item" data-skin="cosmic" data-cost="400">
+<div class="item-preview">
+<div class="slime-preview cosmic"></div>
+</div>
+<div class="item-info">
+<h5>宇宙スライム</h5>
+<p>星空を閉じ込めた宇宙スライム</p>
+</div>
+<div class="item-action">
+<span class="item-price">💎 400</span>
+<button class="buy-btn" data-skin="cosmic">購入</button>
+<span class="owned-badge hidden">所有済</span>
+</div>
+</div>
+</div>
+</div>
+<div class="ad-banner" id="ad-banner" role="complementary" aria-label="広告">
+<div class="ad-label">広告</div>
+<div class="ad-content">
+<div class="ad-title">🎮 リワード広告を見る</div>
+<p>広告を視聴して2倍速収集を30秒延長！</p>
+<button id="reward-ad-btn" class="ad-btn">視聴して報酬を獲得</button>
+</div>
+</div>
+</div>
+</div>
+<div id="tab-customize" class="tab-panel hidden" role="tabpanel" hidden>
+<div class="customize-panel">
+<h3>🎨 カスタマイズ</h3>
+<p>ポイント: <span id="custom-points">0</span></p>
+<div class="custom-section skin-section">
+<h4>スキン</h4>
+<div class="skin-grid" id="skin-grid" role="group" aria-label="スキン選択"></div>
+</div>
+<div class="custom-options">
+<div class="custom-section">
+<h4>色</h4>
+<div class="color-grid" id="color-grid" role="group" aria-label="色選択"></div>
+</div>
+<div class="custom-section">
+<h4>形</h4>
+<div class="shape-grid" id="shape-grid" role="group" aria-label="形状選択"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="share-footer">
+<button class="share-footer-btn" id="share-twitter-footer">
+<span class="x-logo">𝕏</span>
+<span>Twitterでシェア</span>
+</button>
+</div>
+<footer class="tips-banner" role="complementary" aria-label="開発者支援">
+<a href="https://www.buymeacoffee.com/agentslime" target="_blank" rel="noopener noreferrer" title="Buy Me a Coffeeで支援">
+<span aria-hidden="true">☕</span>
+<span>開発を支援する</span>
+</a>
+</footer>
+</div>
+<script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('/sw.js')
+.then(registration => console.log('SW registered:', registration))
+.catch(error => console.log('SW registration failed:', error));
+});
+}
+</script>
 </body>
 </html>
